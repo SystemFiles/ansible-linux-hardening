@@ -1,0 +1,19 @@
+---
+- name: Ensure IP Forwarding is disabled (if not required. Default is no)
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^[#]?net.ipv4.ip_forward'
+    line: net.ipv4.ip_forward=0
+  when: net_disable_ipforward
+
+- name: Ensure Additional IP Security Precautions are implemented
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  loop:
+    - { regexp: '^[#]?net.ipv4.conf.all.send_redirects', line: 'net.ipv4.conf.all.send_redirects = 0' }
+    - { regexp: '^[#]?net.ipv4.conf.default.send_redirects', line: 'net.ipv4.conf.default.send_redirects = 0' }
+    - { regexp: '^[#]?net.ipv4.conf.all.accept_redirects', line: 'net.ipv4.conf.all.accept_redirects = 0' }
+    - { regexp: '^[#]?net.ipv4.conf.default.accept_redirects', line: 'net.ipv4.conf.default.accept_redirects = 0' }
+    - { regexp: '^[#]?net.ipv4.icmp_ignore_bogus_error_responses', line: 'net.ipv4.icmp_ignore_bogus_error_responses = 1' }

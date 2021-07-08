@@ -1,0 +1,10 @@
+---
+- name: Update all package sources to latest stable versions
+  apt:
+    name: '*'
+    autoremove: yes
+    state: latest
+
+- name: Upgrade all packages with newer versions available
+  apt:
+    upgrade: yes

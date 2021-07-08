@@ -1,0 +1,26 @@
+---
+- name: Ensure sshd_config is hardended
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  loop:
+    - { regexp: '^[#]?PermitRootLogin', line: 'PermitRootLogin no' }
+    - { regexp: '^[#]?PasswordAuthentication', line: 'PasswordAuthentication no' }
+    - { regexp: '^[#]?PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
+    - { regexp: '^[#]?MaxAuthTries', line: 'MaxAuthTries 10' }
+    - { regexp: '^[#]?IgnoreRhosts', line: 'IgnoreRhosts yes' }
+    - { regexp: '^[#]?HostbasedAuthentication', line: 'HostbasedAuthentication no' }
+    - { regexp: '^[#]?X11Forwarding', line: 'X11Forwarding no' }
+    - { regexp: '^[#]?Ciphers', line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr' }
+    - { regexp: '^[#]?ClientAliveInterval', line: 'ClientAliveInterval 900' }
+    - { regexp: '^[#]?ClientAliveCountMax', line: 'ClientAliveCountMax 0' }
+    - { regexp: '^[#]?UsePAM', line: 'UsePAM yes' }
+    - { regexp: '^[#]?AllowUsers', line: 'AllowUsers {{ ssh_allowed_user }}'}
+
+- name: Ensure permissions are set for /etc/ssh/sshd_config
+  file:
+    path: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0600

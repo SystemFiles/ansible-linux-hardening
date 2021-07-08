@@ -1,0 +1,29 @@
+---
+- name: Ensure {{ boot_mountpoint }} exists and is mounted
+  ansible.posix.mount:
+    path: "{{ boot_mountpoint }}"
+    state: present
+
+- name: Get source block device for {{ boot_mountpoint }}
+  command: df -T /boot/efi/ | tail -1 | cut -d' ' -f1
+  register: boot_mountsrc
+
+- name: Get UUID of {{ boot_mountpoint }}
+  command: "lsblk -no UUID {{ boot_mountsrc }}"
+  register: boot_uuid
+
+- name: Get filesystem of {{ boot_mountpoint }}
+  command: "lsblk -no FSTYPE {{ boot_mountsrc }}"
+  register: boot_fstype
+
+- name: Ensure {{ boot_mountpoint }} is locked (ro)
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^UUID={{ boot_uuid.stdout }}'
+    line: "UUID={{ boot_uuid.stdout }} {{ boot_mountpoint }} {{ boot_fstype.stdout }} defaults,ro 1 2"
+
+- name: Ensure fstab belongs to root so {{ boot_mountpoint }} cannot be unlocked
+  ansible.builtin.file:
+    path: /etc/fstab
+    owner: root
+    group: root

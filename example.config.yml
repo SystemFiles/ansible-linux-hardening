@@ -1,0 +1,4 @@
+# Boot directory lock
+boot_lock: true
+boot_mountsrc: /dev/mmcblk0p1
+boot_mountpoint: /boot/efi
