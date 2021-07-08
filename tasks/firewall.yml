@@ -1,6 +1,6 @@
 ---
 - name: Install UFW firewall rule manager
-  apt:
+  ansible.builtin.apt:
     name: ufw
     state: latest
 

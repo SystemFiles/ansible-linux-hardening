@@ -35,3 +35,22 @@
     group: root
     mode: 600
 
+- name: Ensure permissions are set for /etc/ssh/sshd_config
+  ansible.builtin.file:
+    path: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Ensure default user umask is 027 or more restrictive
+  block:
+    - name: Ensure default user umask is 027 or more restrictive - /etc/bashrc
+      ansible.builtin.replace:
+        path: /etc/bashrc
+        regexp: '(^\s+umask) 002'
+        replace: '\1 027'
+    - name: Ensure default user umask is 027 or more restrictive - /etc/profile
+      ansible.builtin.replace:
+        path: /etc/profile
+        regexp: '(^\s+umask) 002'
+        replace: '\1 027'

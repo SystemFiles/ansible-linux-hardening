@@ -1,34 +1,170 @@
 ---
 - name: Ensure sshd_config is hardended
-  ansible.builtin.lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: '{{ item.regexp }}'
-    line: '{{ item.line }}'
-    validate: /usr/sbin/sshd -T -f %s
-  loop:
-    - { regexp: '^[#]?PermitRootLogin', line: 'PermitRootLogin no' }
-    - { regexp: '^[#]?PasswordAuthentication', line: 'PasswordAuthentication no' }
-    - { regexp: '^[#]?PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
-    - { regexp: '^[#]?MaxAuthTries', line: 'MaxAuthTries 10' }
-    - { regexp: '^[#]?IgnoreRhosts', line: 'IgnoreRhosts yes' }
-    - { regexp: '^[#]?HostbasedAuthentication', line: 'HostbasedAuthentication no' }
-    - { regexp: '^[#]?X11Forwarding', line: 'X11Forwarding no' }
-    - { regexp: '^[#]?Ciphers', line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr' }
-    - { regexp: '^[#]?ClientAliveInterval', line: 'ClientAliveInterval 900' }
-    - { regexp: '^[#]?ClientAliveCountMax', line: 'ClientAliveCountMax 0' }
-    - { regexp: '^[#]?UsePAM', line: 'UsePAM yes' }
-    - { regexp: '^[#]?AllowUsers', line: 'AllowUsers {{ ssh_allowed_user }}'}
+  block:
+    - name: Ensure Root login is disabled
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?PermitRootLogin \s+'
+        line: PermitRootLogin no
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure Password Authentication is disabled
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?PasswordAuthentication \s+'
+        line: PasswordAuthentication no
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure Empty Passwords are restricted
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?PermitEmptyPasswords \s+'
+        line: PermitEmptyPasswords no
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure Maximum login attempts are limited to 10 or less
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?MaxAuthTries \d'
+        line: MaxAuthTries {{ ssh_max_login_tries }}
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure RHost connections are not permitted
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?IgnoreRhosts \s+'
+        line: IgnoreRhosts yes
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure Hostbased Authentication is disabled
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?HostbasedAuthentication \s+'
+        line: HostbasedAuthentication no
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure X11Forwarding is disabled
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?X11Forwarding \s+'
+        line: X11Forwarding no
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure only strong ciphers are used
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?Ciphers \s+'
+        line: Ciphers {{ ssh_ciphers }}
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure SSH Idle Timeout Interval is configured
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?ClientAliveInterval \d'
+        line: ClientAliveInterval {{ ssh_idle_timeout }}
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure SSH ClientAliveCountMax is set to <= 3
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?ClientAliveCountMax \d'
+        line: ClientAliveCountMax {{ ssh_client_alive_count_max }}
+        validate: /usr/sbin/sshd -T -f %s
+      when:
+        - ssh_client_alive_count_max <= 3
+    - name: Ensure PAM Modules are enabled for further hardening
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?UsePAM \s+'
+        line: UsePAM yes
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure SSH Access is limited - allowusers
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?AllowUsers \s+'
+        line: AllowUsers {{ ssh_allowed_user }}
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure SSH Protocol is set to 2
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?Protocol \d'
+        line: Protocol 2
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure SSH LogLevel is set to INFO
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?LogLevel \s+'
+        line: LogLevel INFO
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure SSH PermitUserEnvironment is disabled
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?PermitUserEnvironment \s+'
+        line: PermitUserEnvironment no
+        validate: /usr/sbin/sshd -T -f %s
+    - name: Ensure SSH LoginGraceTime is set to one minute or less
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: '^(#)?LoginGraceTime'
+        line: LoginGraceTime {{ ssh_login_grace_time }}
+        validate: /usr/sbin/sshd -T -f %s
 
-- name: Ensure permissions are set for /etc/ssh/sshd_config
-  ansible.builtin.file:
-    path: /etc/ssh/sshd_config
-    owner: root
-    group: root
-    mode: 0600
+- name: Ensure system accounts are non-login
+  block:
+    - name: Gather system accounts from /etc/passwd
+      ansible.builtin.command: "awk -F: '($3 < 500) {print $1 }' /etc/passwd"
+      changed_when: no
+      register: system_accounts
+    - name: Ensure system accounts are non-login (password_lock)
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password_lock: true
+      loop:
+        - "{{ system_accounts.stdout_lines |list }}"
+      when:
+        - item != "root"
+    - name: Ensure system accounts are non-login (shell)
+      ansible.builtin.user:
+        name: "{{ item }}"
+        shell: /sbin/nologin
+      loop:
+        - "{{ system_accounts.stdout_lines |list }}"
+      when:
+        - item != "root"
+        - item != "sync"
+        - item != "shutdown"
+        - item != "halt"
 
 - name: Install fail2ban to reject continuous failed logins from specific IP addresses
-  apt:
+  ansible.builtin.apt:
     name: 'fail2ban'
     state: latest
 
 # TODO: continue configuration from here
+
+# - name: old
+#   ansible.builtin.lineinfile:
+#     dest: /etc/ssh/sshd_config
+#     regexp: '{{ item.regexp }}'
+#     line: '{{ item.line }}'
+#     validate: /usr/sbin/sshd -T -f %s
+#   loop:
+#     - { regexp: '^(#)?PermitRootLogin', line: 'PermitRootLogin no' }
+#     - { regexp: '^(#)?PasswordAuthentication', line: 'PasswordAuthentication no' }
+#     - { regexp: '^(#)?PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
+#     - { regexp: '^(#)?MaxAuthTries', line: 'MaxAuthTries 10' }
+#     - { regexp: '^(#)?IgnoreRhosts', line: 'IgnoreRhosts yes' }
+#     - { regexp: '^(#)?HostbasedAuthentication', line: 'HostbasedAuthentication no' }
+#     - { regexp: '^(#)?X11Forwarding', line: 'X11Forwarding no' }
+#     - { regexp: '^(#)?Ciphers', line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr' }
+#     - { regexp: '^(#)?ClientAliveInterval', line: 'ClientAliveInterval 900' }
+#     - { regexp: '^(#)?ClientAliveCountMax', line: 'ClientAliveCountMax 0' }
+#     - { regexp: '^(#)?UsePAM', line: 'UsePAM yes' }
+#     - { regexp: '^(#)?AllowUsers', line: 'AllowUsers {{ ssh_allowed_user }}'}

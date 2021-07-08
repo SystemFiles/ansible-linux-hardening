@@ -5,15 +5,18 @@
     state: present
 
 - name: Get source block device for {{ boot_mountpoint }}
-  command: df -T /boot/efi/ | tail -1 | cut -d' ' -f1
+  ansible.builtin.command: df -T /boot/efi/ | tail -1 | cut -d' ' -f1
+  changed_when: no
   register: boot_mountsrc
 
 - name: Get UUID of {{ boot_mountpoint }}
-  command: "lsblk -no UUID {{ boot_mountsrc }}"
+  ansible.builtin.command: "lsblk -no UUID {{ boot_mountsrc }}"
+  changed_when: no
   register: boot_uuid
 
 - name: Get filesystem of {{ boot_mountpoint }}
-  command: "lsblk -no FSTYPE {{ boot_mountsrc }}"
+  ansible.builtin.command: "lsblk -no FSTYPE {{ boot_mountsrc }}"
+  changed_when: no
   register: boot_fstype
 
 - name: Ensure {{ boot_mountpoint }} is locked (ro)
