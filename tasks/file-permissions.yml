@@ -58,14 +58,19 @@
         path: /etc/bashrc
         regexp: '(^\s+umask) 002'
         replace: '\1 {{ fp_umask_default }}'
-      failed_when: false
     - name: FILE PERMISSIONS | 7.2 | Ensure default user umask is 027 or more restrictive - /etc/profile
       ansible.builtin.replace:
         path: /etc/profile
         regexp: '(^\s+umask) 002'
         replace: '\1 {{ fp_umask_default }}'
   rescue:
-    - name: FILE PERMISSIONS | 7.1-r | Ensure default user umask is 027 or more restrictive - only /etc/profile
+    - name: FILE PERMISSIONS | 7.1-r | Ensure default user umask is 027 or more restrictive - only /etc/login.defs
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/login.defs
+        regexp: '^(# *)?UMASK'
+        line: 'UMASK           {{ fp_umask_default }}'
+    - name: FILE PERMISSIONS | 7.2-r | Ensure default user umask is 027 or more restrictive - only /etc/profile
       ansible.builtin.replace:
         path: /etc/profile
         regexp: '(^\s+umask) 002'
