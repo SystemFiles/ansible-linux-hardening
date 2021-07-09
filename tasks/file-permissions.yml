@@ -42,15 +42,22 @@
     group: root
     mode: 0600
 
+- name: Ensure fstab belongs to root so {{ boot_mountpoint }} cannot be unlocked maliciously
+  ansible.builtin.file:
+    path: /etc/fstab
+    owner: root
+    group: root
+  when: boot_lock
+
 - name: Ensure default user umask is 027 or more restrictive
   block:
     - name: Ensure default user umask is 027 or more restrictive - /etc/bashrc
       ansible.builtin.replace:
         path: /etc/bashrc
         regexp: '(^\s+umask) 002'
-        replace: '\1 027'
+        replace: '\1 {{ fp_umask_default }}'
     - name: Ensure default user umask is 027 or more restrictive - /etc/profile
       ansible.builtin.replace:
         path: /etc/profile
         regexp: '(^\s+umask) 002'
-        replace: '\1 027'
+        replace: '\1 {{ fp_umask_default }}'

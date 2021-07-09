@@ -1,4 +1,41 @@
-# Boot directory lock
+# Configuration for Hardening Linux System
+# Note: changing some of the provided parameters may lessen the security for your target system
+# The default settings are recommended for this ansible project
+
+# Boot directory lock settings (change boot_mountpoint)
 boot_lock: true
-boot_mountsrc: /dev/mmcblk0p1
 boot_mountpoint: /boot/efi
+
+# Network configuration settings
+net_enabled: true
+net_disable_ipforward: true
+
+# Firewall configuration settings
+firewall_enabled: true
+firewall_logging_mode: 'full' # Options are full, high, medium, low, off, on 
+firewall_ssh_ip_subnets:
+  - 10.35.1.0/26
+
+# SSH configuration settings
+ssh_enabled: true
+ssh_port: 8222 # Port to use to connect through SSH
+ssh_max_login_tries: 10 # Number of attempts a user can attempt to login before stopped
+ssh_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
+ssh_idle_timeout: 900
+ssh_client_alive_count_max: 3
+ssh_allowed_users: ben # Users that are allowed to connect through ssh (separated by spaces)
+ssh_login_grace_time: 60 # Login grace time in seconds (1min or less recommended)
+ssh_min_acc_uid: 500 # Min account uid for system accounts to be identified
+ssh_import_keys: true # Whether or not to import ssh keys from a URL (note: installs httplib2 via pip)
+ssh_keys_url: https://github.com/systemfiles.keys
+ssh_keys_user: ben
+
+# Password rule settings
+pass_enabled: true
+pass_unlock_time: 3600 # Time (in seconds) it takes for an account to be unlocked after being locked from failed attempts to login
+pass_expires: true # Whether user passwords expire after a set time interval
+pass_expire_days: 90
+
+# File permissions settings
+fp_enabled: true
+fp_umask_default: "027"

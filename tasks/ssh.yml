@@ -1,4 +1,11 @@
 ---
+- name: Ensure the default SSH port is not 22
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?Port \d'
+    line: Port {{ ssh_port }}
+    validate: /usr/sbin/sshd -T -f %s
 - name: Ensure sshd_config is hardended
   block:
     - name: Ensure Root login is disabled
@@ -22,7 +29,7 @@
         regexp: '^(#)?PermitEmptyPasswords \s+'
         line: PermitEmptyPasswords no
         validate: /usr/sbin/sshd -T -f %s
-    - name: Ensure Maximum login attempts are limited to 10 or less
+    - name: Ensure Maximum login attempts are limited to 5 or less
       ansible.builtin.lineinfile:
         state: present
         dest: /etc/ssh/sshd_config
@@ -85,8 +92,9 @@
         state: present
         dest: /etc/ssh/sshd_config
         regexp: '^(#)?AllowUsers \s+'
-        line: AllowUsers {{ ssh_allowed_user }}
+        line: AllowUsers {{ ssh_allowed_users }}
         validate: /usr/sbin/sshd -T -f %s
+      when: ssh_allowed_users |length > 0
     - name: Ensure SSH Protocol is set to 2
       ansible.builtin.lineinfile:
         state: present
@@ -119,7 +127,7 @@
 - name: Ensure system accounts are non-login
   block:
     - name: Gather system accounts from /etc/passwd
-      ansible.builtin.command: "awk -F: '($3 < 500) {print $1 }' /etc/passwd"
+      ansible.builtin.command: "awk -F: '($3 < {{ ssh_min_acc_uid }}) {print $1 }' /etc/passwd"
       changed_when: no
       register: system_accounts
     - name: Ensure system accounts are non-login (password_lock)
@@ -165,23 +173,3 @@
   when: 
     - ansible_facts.os_family == "Debian"
     - ssh_import_keys
-
-# - name: old
-#   ansible.builtin.lineinfile:
-#     dest: /etc/ssh/sshd_config
-#     regexp: '{{ item.regexp }}'
-#     line: '{{ item.line }}'
-#     validate: /usr/sbin/sshd -T -f %s
-#   loop:
-#     - { regexp: '^(#)?PermitRootLogin', line: 'PermitRootLogin no' }
-#     - { regexp: '^(#)?PasswordAuthentication', line: 'PasswordAuthentication no' }
-#     - { regexp: '^(#)?PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
-#     - { regexp: '^(#)?MaxAuthTries', line: 'MaxAuthTries 10' }
-#     - { regexp: '^(#)?IgnoreRhosts', line: 'IgnoreRhosts yes' }
-#     - { regexp: '^(#)?HostbasedAuthentication', line: 'HostbasedAuthentication no' }
-#     - { regexp: '^(#)?X11Forwarding', line: 'X11Forwarding no' }
-#     - { regexp: '^(#)?Ciphers', line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr' }
-#     - { regexp: '^(#)?ClientAliveInterval', line: 'ClientAliveInterval 900' }
-#     - { regexp: '^(#)?ClientAliveCountMax', line: 'ClientAliveCountMax 0' }
-#     - { regexp: '^(#)?UsePAM', line: 'UsePAM yes' }
-#     - { regexp: '^(#)?AllowUsers', line: 'AllowUsers {{ ssh_allowed_user }}'}

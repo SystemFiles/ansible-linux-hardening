@@ -5,28 +5,22 @@
     state: present
 
 - name: Get source block device for {{ boot_mountpoint }}
-  ansible.builtin.command: df -T /boot/efi/ | tail -1 | cut -d' ' -f1
-  changed_when: no
+  ansible.builtin.command: df -T {{ boot_mountpoint }} | tail -1 | cut -d' ' -f1
+  changed_when: false
   register: boot_mountsrc
 
 - name: Get UUID of {{ boot_mountpoint }}
   ansible.builtin.command: "lsblk -no UUID {{ boot_mountsrc }}"
-  changed_when: no
+  changed_when: false
   register: boot_uuid
 
 - name: Get filesystem of {{ boot_mountpoint }}
   ansible.builtin.command: "lsblk -no FSTYPE {{ boot_mountsrc }}"
-  changed_when: no
+  changed_when: false
   register: boot_fstype
 
 - name: Ensure {{ boot_mountpoint }} is locked (ro)
   ansible.builtin.lineinfile:
     path: /etc/fstab
-    regexp: '^UUID={{ boot_uuid.stdout }}'
+    regexp: '^UUID={{ boot_uuid.stdout }} {{ boot_mountpoint }} {{ boot_fstype.stdout }} defaults,ro 1 2'
     line: "UUID={{ boot_uuid.stdout }} {{ boot_mountpoint }} {{ boot_fstype.stdout }} defaults,ro 1 2"
-
-- name: Ensure fstab belongs to root so {{ boot_mountpoint }} cannot be unlocked
-  ansible.builtin.file:
-    path: /etc/fstab
-    owner: root
-    group: root

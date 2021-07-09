@@ -8,7 +8,7 @@
   community.general.ufw:
     state: disabled
 
-- name: Set logging to 'full'
+- name: Set logging to '{{ firewall_logging_mode }}'
   community.general.ufw:
     logging: '{{ firewall_logging_mode }}'
 
@@ -20,9 +20,9 @@
   community.general.ufw:
     rule: allow
     comment: "OpenSSH Access from {{ item }}"
-    to_port: "{{ firewall_ssh_port }}"
+    to_port: "{{ ssh_port }}"
     from_ip: "{{ item }}"
-  loop: "{{ firewall_ssh_ip_subnets }}"
+  loop: "{{ firewall_ssh_ip_subnets |list }}"
   when: firewall_ssh_ip_restricted
 
 
