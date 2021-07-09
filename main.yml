@@ -23,8 +23,7 @@
     - name: Configure network rules
       ansible.builtin.import_tasks: tasks/network.yml
       when: net_enabled
-      notify:
-        - Reload Sysctl
+      notify: Reload Sysctl
 
     - name: Configure UFW for firewall management
       ansible.builtin.import_tasks: tasks/firewall.yml

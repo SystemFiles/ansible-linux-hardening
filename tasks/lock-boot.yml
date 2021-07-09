@@ -1,26 +1,27 @@
 ---
-- name: Ensure {{ boot_mountpoint }} exists and is mounted
-  ansible.posix.mount:
-    path: "{{ boot_mountpoint }}"
-    state: present
+- name: Check if {{ boot_mountpoint }} exists and is mounted
+  ansible.builtin.command: "mountpoint -q {{ boot_mountpoint }}"
+  register: volume_stat
+  changed_when: false
+  failed_when: volume_stat.rc != 0
 
 - name: Get source block device for {{ boot_mountpoint }}
-  ansible.builtin.command: df -T {{ boot_mountpoint }} | tail -1 | cut -d' ' -f1
+  ansible.builtin.shell: "df -T {{ boot_mountpoint |quote }} | tail -1 | cut -d' ' -f1"
   changed_when: false
   register: boot_mountsrc
 
 - name: Get UUID of {{ boot_mountpoint }}
-  ansible.builtin.command: "lsblk -no UUID {{ boot_mountsrc }}"
+  ansible.builtin.shell: "lsblk -no UUID {{ boot_mountsrc.stdout |quote }}"
   changed_when: false
   register: boot_uuid
 
 - name: Get filesystem of {{ boot_mountpoint }}
-  ansible.builtin.command: "lsblk -no FSTYPE {{ boot_mountsrc }}"
+  ansible.builtin.shell: "lsblk -no FSTYPE {{ boot_mountsrc.stdout |quote }}"
   changed_when: false
   register: boot_fstype
 
 - name: Ensure {{ boot_mountpoint }} is locked (ro)
   ansible.builtin.lineinfile:
     path: /etc/fstab
-    regexp: '^UUID={{ boot_uuid.stdout }} {{ boot_mountpoint }} {{ boot_fstype.stdout }} defaults,ro 1 2'
+    regexp: '^(UUID|LABEL)={{ boot_uuid.stdout }} {{ boot_mountpoint }} {{ boot_fstype.stdout }} defaults,ro 1 2'
     line: "UUID={{ boot_uuid.stdout }} {{ boot_mountpoint }} {{ boot_fstype.stdout }} defaults,ro 1 2"
