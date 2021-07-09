@@ -128,7 +128,7 @@
   block:
     - name: SSH | 3.1 | Gather system accounts from /etc/passwd
       ansible.builtin.command: "awk -F: '($3 < {{ ssh_min_acc_uid }}) {print $1 }' /etc/passwd"
-      changed_when: no
+      changed_when: false
       register: system_accounts
     - name: SSH | 3.2 | Ensure system accounts are non-login (password_lock)
       ansible.builtin.user:
