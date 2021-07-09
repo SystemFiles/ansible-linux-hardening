@@ -1,22 +1,22 @@
 ---
-- name: Ensure UFW firewall rule manager is installed
+- name: UFW | 1.0 | Ensure UFW firewall rule manager is installed
   ansible.builtin.apt:
     name: ufw
     state: latest
 
-- name: Ensure UFW is disabled (so we don't get locked out)
+- name: UFW | 2.0 | Ensure UFW is disabled (so we don't get locked out)
   community.general.ufw:
     state: disabled
 
-- name: Set logging to '{{ firewall_logging_mode }}'
+- name: UFW | 3.0 | Set logging to '{{ firewall_logging_mode }}'
   community.general.ufw:
     logging: '{{ firewall_logging_mode }}'
 
-- name: Set default policy to implicit deny
+- name: UFW | 4.0 | Set default policy to implicit deny
   community.general.ufw:
     default: deny
 
-- name: Allow SSH access only from select subnets
+- name: UFW | 4.0 | Allow SSH access only from select subnets
   community.general.ufw:
     rule: allow
     comment: "OpenSSH Access from {{ item }}"

@@ -1,5 +1,5 @@
 ---
-- name: Ensure anacrontab, crontab, and cron.* have safe permissions
+- name: FILE PERMISSIONS | 1.0 | Ensure anacrontab, crontab, and cron.* have safe permissions
   ansible.builtin.file:
     path: "{{ item }}"
     owner: root
@@ -10,40 +10,40 @@
     - /etc/anacrontab
     - /etc/crontab
     - /etc/cron.hourly
-    - /etc/cront.daily
+    - /etc/cron.daily
     - /etc/cron.weekly
     - /etc/cron.monthly
     - /etc/cron.d
 
-- name: Ensure proper permissions are set for passwd file
+- name: FILE PERMISSIONS | 2.0 | Ensure proper permissions are set for passwd file
   ansible.builtin.file:
     path: /etc/passwd
     owner: root
     group: root
     mode: 0644
 
-- name: Ensure proper permissions are set for the shadow file
+- name: FILE PERMISSIONS | 3.0 | Ensure proper permissions are set for the shadow file
   ansible.builtin.file:
     path: /etc/shadow
     owner: root
     group: root
     mode: 0600
 
-- name: Ensure proper permissions are set for the gshadow file
+- name: FILE PERMISSIONS | 4.0 | Ensure proper permissions are set for the gshadow file
   ansible.builtin.file:
     path: /etc/gshadow
     owner: root
     group: root
     mode: 0600
 
-- name: Ensure permissions are set for /etc/ssh/sshd_config
+- name: FILE PERMISSIONS | 5.0 | Ensure permissions are set for /etc/ssh/sshd_config
   ansible.builtin.file:
     path: /etc/ssh/sshd_config
     owner: root
     group: root
     mode: 0600
 
-- name: Ensure permissions are set for /etc/fstab
+- name: FILE PERMISSIONS | 6.0 | Ensure permissions are set for /etc/fstab
   ansible.builtin.file:
     path: /etc/fstab
     owner: root
@@ -51,21 +51,21 @@
     mode: 0600
   when: boot_lock
 
-- name: Ensure default user umask is 027 or more restrictive
+- name: FILE PERMISSIONS | 7.0 | Ensure default user umask is 027 or more restrictive
   block:
-    - name: Ensure default user umask is 027 or more restrictive - /etc/bashrc
+    - name: FILE PERMISSIONS | 7.1 | Ensure default user umask is 027 or more restrictive - /etc/bashrc
       ansible.builtin.replace:
         path: /etc/bashrc
         regexp: '(^\s+umask) 002'
         replace: '\1 {{ fp_umask_default }}'
       failed_when: false
-    - name: Ensure default user umask is 027 or more restrictive - /etc/profile
+    - name: FILE PERMISSIONS | 7.2 | Ensure default user umask is 027 or more restrictive - /etc/profile
       ansible.builtin.replace:
         path: /etc/profile
         regexp: '(^\s+umask) 002'
         replace: '\1 {{ fp_umask_default }}'
   rescue:
-    - name: Ensure default user umask is 027 or more restrictive - /etc/profile
+    - name: FILE PERMISSIONS | 7.1-r | Ensure default user umask is 027 or more restrictive - only /etc/profile
       ansible.builtin.replace:
         path: /etc/profile
         regexp: '(^\s+umask) 002'

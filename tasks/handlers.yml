@@ -1,4 +1,14 @@
 ---
+- name: Reboot Required
+  ansible.builtin.reboot:
+    msg: "Some changes made to secure your system(s) require them to be restarted. Ansible is initiating a reboot"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: /bin/true
+  changed_when: false
+  when: boot_automate_reboot
 - name: Restart UFW
   community.general.ufw:
     state: enabled
