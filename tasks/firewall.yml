@@ -1,5 +1,5 @@
 ---
-- name: Install UFW firewall rule manager
+- name: Ensure UFW firewall rule manager is installed
   ansible.builtin.apt:
     name: ufw
     state: latest
@@ -24,13 +24,5 @@
     from_ip: "{{ item }}"
   loop: "{{ firewall_ssh_ip_subnets }}"
   when: firewall_ssh_ip_restricted
-
-- name: Start and enable UFW service
-  community.general.ufw:
-    state: enabled
-
-- name: Reload UFW to ensure rules are set
-  community.general.ufw:
-    state: reloaded
 
 

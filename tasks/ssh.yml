@@ -142,12 +142,29 @@
         - item != "shutdown"
         - item != "halt"
 
-- name: Install fail2ban to reject continuous failed logins from specific IP addresses
-  ansible.builtin.apt:
-    name: 'fail2ban'
-    state: latest
-
-# TODO: continue configuration from here
+- name: Ensure SSH-Key for the selected user are installed on the system
+  block:
+    - name: Install httplib2
+      ansible.builtin.pip:
+        name: httplib2
+        state: present
+    - name: Get SSH keys from URL
+      ansible.builtin.uri:
+        url: "{{ ssh_keys_url }}"
+        return_content: yes
+      register: ssh_keys
+    - name: Add the SSH keys to ~/.ssh/authorized_keys
+      ansible.builtin.lineinfile:
+        dest: ~/.ssh/authorized_keys
+        regexp: "{{ item }}"
+        line: "{{ item }}"
+      loop: 
+        - "{{ ssh_keys.results |list }}"
+      become: true
+      become_user: "{{ ssh_keys_user }}"
+  when: 
+    - ansible_facts.os_family == "Debian"
+    - ssh_import_keys
 
 # - name: old
 #   ansible.builtin.lineinfile:

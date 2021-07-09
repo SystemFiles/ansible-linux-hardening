@@ -8,3 +8,8 @@
 - name: Upgrade all packages with newer versions available
   ansible.builtin.apt:
     upgrade: yes
+
+- name: Ensure that security patches are always installed
+  ansible.builtin.apt:
+    name: unattended-upgrades
+    state: latest
