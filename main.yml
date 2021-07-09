@@ -3,9 +3,9 @@
   become: true
 
   pre_tasks:
-    - name: Load variables from configuration
+    - name: PRE TASKS | 1.0 | Load variables from configuration
       ansible.builtin.include_vars: config.yml
-    - name: Ensure Apt Cache is up-to-date
+    - name: PRE TASKS | 2.0 | Ensure Apt Cache is up-to-date
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 3600
@@ -17,33 +17,33 @@
       ansible.builtin.import_tasks: tasks/handlers.yml
 
   tasks:
-    - name: System Updates Configuration
+    - name: "[System Updates Configuration]"
       ansible.builtin.import_tasks: tasks/system-update.yml
     
-    - name: Configure network rules
+    - name: "[Configure network rules]"
       ansible.builtin.import_tasks: tasks/network.yml
       when: net_enabled
       notify: Reload Sysctl
 
-    - name: Configure UFW for firewall management
+    - name: "[Configure UFW for firewall management]"
       ansible.builtin.import_tasks: tasks/firewall.yml
       when: firewall_enabled
       notify: Restart UFW
 
-    - name: Ensure Boot Directory is locked
+    - name: "[Ensure Boot Directory is locked]"
       ansible.builtin.import_tasks: tasks/lock-boot.yml
       when: boot_lock
 
-    - name: Configure SSH
+    - name: "[Configure SSH]"
       ansible.builtin.import_tasks: tasks/ssh.yml
       when: ssh_enabled
       notify: Restart SSH
     
-    - name: Configure password rules
+    - name: "[Configure password rules]"
       ansible.builtin.import_tasks: tasks/password-rules.yml
       when: pass_enabled
       notify: Restart SSH
 
-    - name: Configure file permissions
+    - name: "[Configure file permissions]"
       ansible.builtin.import_tasks: tasks/file-permissions.yml
       when: fp_enabled

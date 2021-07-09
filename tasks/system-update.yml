@@ -1,15 +1,15 @@
 ---
-- name: Update all package sources to latest stable versions
+- name: SYSTEM UPDATE | 1.0 | Update all package sources to latest stable versions
   ansible.builtin.apt:
     name: '*'
     autoremove: yes
     state: latest
 
-- name: Upgrade all packages with newer versions available
+- name: SYSTEM UPDATE | 2.0 | Upgrade all packages with newer versions available
   ansible.builtin.apt:
     upgrade: yes
 
-- name: Ensure that security patches are always installed
+- name: SYSTEM UPDATE | 3.0 | Ensure that security patches are always installed
   ansible.builtin.apt:
     name: unattended-upgrades
     state: latest
