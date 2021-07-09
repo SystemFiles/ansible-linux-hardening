@@ -5,6 +5,7 @@
 # Boot directory lock settings (change boot_mountpoint)
 boot_lock: true
 boot_mountpoint: /boot/efi
+boot_automate_reboot: false # Set this to true if you want Ansible to reboot all hosts after applying lock to your boot directory (req'd to applied changes)
 
 # Network configuration settings
 net_enabled: true

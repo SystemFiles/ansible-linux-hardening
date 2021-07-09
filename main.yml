@@ -33,6 +33,7 @@
     - name: "[Ensure Boot Directory is locked]"
       ansible.builtin.import_tasks: tasks/lock-boot.yml
       when: boot_lock
+      notify: Reboot Required
 
     - name: "[Configure SSH]"
       ansible.builtin.import_tasks: tasks/ssh.yml
