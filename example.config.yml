@@ -39,6 +39,7 @@ pass_lock_attempts: 5 # Number of login attempts before locking the account
 pass_unlock_time: 3600 # Time (in seconds) it takes for an account to be unlocked after being locked from failed attempts to login
 pass_expires: true # Whether user passwords expire after a set time interval
 pass_expire_days: 90
+pass_min_user_uid: 1000
 
 # File permissions settings
 fp_enabled: true
