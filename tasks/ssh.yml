@@ -163,16 +163,15 @@
         url: "{{ ssh_keys_url }}"
         return_content: yes
       register: ssh_keys
-    - name: SSH | 4.4 | dd the SSH keys to ~/.ssh/authorized_keys
+    - name: SSH | 4.4 | Add the SSH keys to ~/.ssh/authorized_keys
       ansible.builtin.blockinfile:
-        dest: ~/.ssh/authorized_keys
+        create: true
+        dest: "/home/{{ ssh_keys_user }}/.ssh/authorized_keys"
         block: |
           {{ ssh_keys.content }}
       when:
         - ssh_keys.status == 200
         - ssh_keys.content |length > 0
-      become: true
-      become_user: "{{ ssh_keys_user }}"
   when: 
     - ansible_facts.os_family == "Debian"
     - ssh_import_keys
