@@ -21,6 +21,10 @@ jobs:
     steps:
       - name: checkout code using git
         uses: actions/checkout@v2
+      - name: Ensure git is configured
+        run: |
+          git config --global user.email "ben@sykesdev.ca"
+          git config --global user.name "Benjamin Sykes"
       - name: gather version information
         id: version_info
         run: echo "::set-output name=ROLE_VERSION::$(cat meta/main.yml | grep '^\s\sversion:' | cut -d':' -f2 | sed 's/\s//g' | sed "s/\'//g")"
