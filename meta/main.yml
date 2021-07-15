@@ -1,24 +1,20 @@
 galaxy_info:
   namespace: sykesdev
-  name: ansible_linux_security
-  version: '0.1.0'
-  readme: README.md
+  name: ansible-linux-security
+  version: '1.0.0'
+  readme: "README.md"
   authors: 
-    - Benjamin Sykes (SystemFiles)
-  github_repo: https://github.com/SystemFiles/ansible-linux-security
+    - "Benjamin Sykes<ben@sykesdev.ca>"
+  license_file: LICENSE
+  repository: https://github.com/SystemFiles/ansible-linux-security
   description: Implements a number of best practices security measures to harden a linux system
+  company: Sykesdev
   license: Apache-2.0
   min_ansible_version: '2.10'
-
-  platforms:
-  - name: Ubuntu
-    versions:
-    - 18.04
-    - 20.04
-
   galaxy_tags:
     - security
     - linux
     - ubuntu
     - hardening
     - best-practices
+dependencies: []
