@@ -1,4 +1,6 @@
 ---
+# handlers file for ansible-linux-security
+
 - name: Reboot Required
   ansible.builtin.reboot:
     msg: "Some changes made to secure your system(s) require them to be restarted. Ansible is initiating a reboot"

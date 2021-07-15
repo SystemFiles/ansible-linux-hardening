@@ -1,0 +1,18 @@
+galaxy_info:
+  author: Benjamin Sykes (SystemFiles)
+  description: Implements a number of best practices security measures to harden a linux system
+  license: Apache-2.0
+  min_ansible_version: '2.10'
+
+  platforms:
+  - name: Ubuntu
+    versions:
+    - 18.04
+    - 20.04
+
+  galaxy_tags:
+    - security
+    - linux
+    - ubuntu
+    - hardening
+    - best-practices

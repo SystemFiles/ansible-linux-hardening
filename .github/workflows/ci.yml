@@ -1,5 +1,6 @@
 ---
-name: Lint-CI
+
+name: CI
 on:
   pull_request:
   push:
