@@ -12,39 +12,5 @@
       when:
         - ansible_facts.os_family == "Debian"
 
-  handlers:
-    - name: Include handlers
-      ansible.builtin.import_tasks: tasks/handlers.yml
-
-  tasks:
-    - name: "[System Updates Configuration]"
-      ansible.builtin.import_tasks: tasks/system-update.yml
-    
-    - name: "[Configure network rules]"
-      ansible.builtin.import_tasks: tasks/network.yml
-      when: net_enabled
-      notify: Reload Sysctl
-
-    - name: "[Configure UFW for firewall management]"
-      ansible.builtin.import_tasks: tasks/firewall.yml
-      when: firewall_enabled
-      notify: Restart UFW
-
-    - name: "[Ensure Boot Directory is locked]"
-      ansible.builtin.import_tasks: tasks/lock-boot.yml
-      when: boot_lock
-      notify: Reboot Required
-
-    - name: "[Configure SSH]"
-      ansible.builtin.import_tasks: tasks/ssh.yml
-      when: ssh_enabled
-      notify: Restart SSH
-    
-    - name: "[Configure password rules]"
-      ansible.builtin.import_tasks: tasks/password-rules.yml
-      when: pass_enabled
-      notify: Restart SSH
-
-    - name: "[Configure file permissions]"
-      ansible.builtin.import_tasks: tasks/file-permissions.yml
-      when: fp_enabled
+  roles:
+    - '.'

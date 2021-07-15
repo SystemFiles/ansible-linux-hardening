@@ -3,14 +3,15 @@
  <img width=200px height=250px src=".github/docs/ansible.png" alt="Ansible Linux Hardening Project"></a>
 </p>
 
-<h3 align="center">Ansible Linux Hardening | Ubuntu</h3>
+<h3 align="center">Ansible Linux Security | Ubuntu</h3>
 
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)](https://sykesdev.ca/projects/)
-[![Lint Status](https://github.com/systemfiles/ansible-linux-hardening/workflows/Lint-CI/badge.svg?event=push)](https://github.com/systemfiles/ansible-linux-hardening/actions?query=workflow%3ALint-CI)
-[![GitHub Issues](https://img.shields.io/github/issues/systemfiles/ansible-linux-hardening.svg)](https://github.com/SystemFiles/ansible-linux-hardening/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/systemfiles/ansible-linux-hardening.svg)](https://github.com/SystemFiles/ansible-linux-hardening/issues)
+[![CI](https://github.com/SystemFiles/ansible-linux-security/actions/workflows/ci.yml/badge.svg)](https://github.com/SystemFiles/ansible-linux-security/actions/workflows/ci.yml)
+[![CD](https://github.com/SystemFiles/ansible-linux-security/actions/workflows/cd.yml/badge.svg)](https://github.com/SystemFiles/ansible-linux-security/actions/workflows/cd.yml)
+[![GitHub Issues](https://img.shields.io/github/issues/systemfiles/ansible-linux-security.svg)](https://github.com/SystemFiles/ansible-linux-security/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/systemfiles/ansible-linux-security.svg)](https://github.com/SystemFiles/ansible-linux-security/issues)
 [![License](https://img.shields.io/badge/license-Apache2.0-blue.svg)](/LICENSE)
 
 </div>
@@ -28,6 +29,7 @@ This Ansible project performs a number of linux hardening tasks on a target or g
 ### ⟆ Limitations
 
 - Officially only supports Ubuntu, but may work on other distrobutions as well. It has simply not been tested elsewhere yet.
+- Requires some additional collections to function properly (`ansible.posix` and `community.general`)
 
 ## 👷‍♂️ Getting Started
 
@@ -35,7 +37,7 @@ First clone the repository to your Ansible controller
 
 ```bash
 
-git clone https://github.com/SystemFiles/ansible-linux-hardening.git; cd ansible-linux-hardening
+git https://github.com/SystemFiles/ansible-linux-security.git; cd ansible-linux-security
 
 ```
 
@@ -50,15 +52,21 @@ cp ./example.inventory.yml ./inventory.yml
 
 > Note: for running after the first time, you will likely need to specify a port in your `inventory.yml` file to connect again.
 
-Install some collections that are required by the project using the following `ansible-galaxy` command.
+Install prerequisite collections via `requirements.yml`
+
+```bash
+ansible-galaxy install -r requirements.yml
+```
+
+Install the role (can use local via `roles: - '.'`)
 
 ```bash
 
-ansible-galaxy collection install -r requirements.yml
+ansible-galaxy install systemfiles.ansible_linux_security
 
 ```
 
-Now run the play against your identified hosts
+Now execute the play against your identified hosts
 
 ```bash
 
