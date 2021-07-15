@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v2
       - name: gather version information
         id: version_info
-        run: echo '::set-output name=ROLE_VERSION::$(cat meta/main.yml | grep '^\s\sversion:' | cut -d':' -f2 | sed 's/\s//g' | sed "s/\'//g")
+        run: echo "::set-output name=ROLE_VERSION::$(cat meta/main.yml | grep '^\s\sversion:' | cut -d':' -f2 | sed 's/\s//g' | sed "s/\'//g")"
       - name: create tags (semver)
         run: |
           ROLE_VERSION=${{ steps.version_info.outputs.ROLE_VERSION }}
