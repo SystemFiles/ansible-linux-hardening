@@ -23,13 +23,13 @@ jobs:
         uses: actions/checkout@v2
       - name: gather version information
         run: |
-          echo ::set-env name=ROLE_VERSION::v$(cat meta/main.yml | grep '^\s\sversion:' | cut -d':' -f2 | sed 's/\s//g' | sed 's/\'//g')
+          echo ::set-env name=ROLE_VERSION::$(cat meta/main.yml | grep '^\s\sversion:' | cut -d':' -f2 | sed 's/\s//g' | sed "s/\'//g")
       - name: create tags (semver)
         run: |
           if [[ git tag --list | egrep '^$ROLE_VERSION$' ]]; then
-            git tag -a $ROLE_VERSION -m "($ROLE_VERSION): Release"
-            git tag -a $(echo $ROLE_VERSION | cut -d'.' -f1).x --force -m "($ROLE_VERSION): Release"
-            git tag -a $(echo $ROLE_VERSION | cut -d'.' -f1-2).x --force -m "($ROLE_VERSION): Release"
+            git tag -a v$ROLE_VERSION -m "($ROLE_VERSION): Release"
+            git tag -a v$(echo $ROLE_VERSION | cut -d'.' -f1).x --force -m "($ROLE_VERSION): Release"
+            git tag -a v$(echo $ROLE_VERSION | cut -d'.' -f1-2).x --force -m "($ROLE_VERSION): Release"
             git push --tags --force
           else
             echo "Not tagging... release version already exists"
