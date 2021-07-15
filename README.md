@@ -3,14 +3,15 @@
  <img width=200px height=250px src=".github/docs/ansible.png" alt="Ansible Linux Hardening Project"></a>
 </p>
 
-<h3 align="center">Ansible Linux Hardening | Ubuntu</h3>
+<h3 align="center">Ansible Linux Security | Ubuntu</h3>
 
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)](https://sykesdev.ca/projects/)
-[![Lint Status](https://github.com/systemfiles/ansible-linux-hardening/workflows/Lint-CI/badge.svg?event=push)](https://github.com/systemfiles/ansible-linux-hardening/actions?query=workflow%3ALint-CI)
-[![GitHub Issues](https://img.shields.io/github/issues/systemfiles/ansible-linux-hardening.svg)](https://github.com/SystemFiles/ansible-linux-hardening/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/systemfiles/ansible-linux-hardening.svg)](https://github.com/SystemFiles/ansible-linux-hardening/issues)
+[![CI](https://github.com/SystemFiles/ansible-linux-security/actions/workflows/ci.yml/badge.svg)](https://github.com/SystemFiles/ansible-linux-security/actions/workflows/ci.yml)
+[![CD](https://github.com/SystemFiles/ansible-linux-security/actions/workflows/cd.yml/badge.svg)](https://github.com/SystemFiles/ansible-linux-security/actions/workflows/cd.yml)
+[![GitHub Issues](https://img.shields.io/github/issues/systemfiles/ansible-linux-security.svg)](https://github.com/SystemFiles/ansible-linux-security/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/systemfiles/ansible-linux-security.svg)](https://github.com/SystemFiles/ansible-linux-security/issues)
 [![License](https://img.shields.io/badge/license-Apache2.0-blue.svg)](/LICENSE)
 
 </div>
@@ -36,7 +37,7 @@ First clone the repository to your Ansible controller
 
 ```bash
 
-git https://github.com/SystemFiles/ansible-linux-security.git; cd ansible-linux-hardening
+git https://github.com/SystemFiles/ansible-linux-security.git; cd ansible-linux-security
 
 ```
 
