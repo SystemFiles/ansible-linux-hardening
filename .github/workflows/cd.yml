@@ -22,10 +22,11 @@ jobs:
       - name: checkout code using git
         uses: actions/checkout@v2
       - name: gather version information
-        run: |
-          echo ::set-env name=ROLE_VERSION::$(cat meta/main.yml | grep '^\s\sversion:' | cut -d':' -f2 | sed 's/\s//g' | sed "s/\'//g")
+        id: version_info
+        run: echo '::set-output name=ROLE_VERSION::$(cat meta/main.yml | grep '^\s\sversion:' | cut -d':' -f2 | sed 's/\s//g' | sed "s/\'//g")'
       - name: create tags (semver)
         run: |
+          ROLE_VERSION=${{ steps.version_info.outputs.ROLE_VERSION }}
           if [[ git tag --list | egrep '^$ROLE_VERSION$' ]]; then
             git tag -a v$ROLE_VERSION -m "($ROLE_VERSION): Release"
             git tag -a v$(echo $ROLE_VERSION | cut -d'.' -f1).x --force -m "($ROLE_VERSION): Release"
