@@ -1,5 +1,10 @@
 galaxy_info:
-  author: Benjamin Sykes (SystemFiles)
+  namespace: sykesdev
+  name: ansible_linux_security
+  version: '0.1.0'
+  readme: README.md
+  authors: 
+    - Benjamin Sykes (SystemFiles)
   description: Implements a number of best practices security measures to harden a linux system
   license: Apache-2.0
   min_ansible_version: '2.10'
