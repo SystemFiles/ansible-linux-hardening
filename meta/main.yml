@@ -5,6 +5,7 @@ galaxy_info:
   readme: README.md
   authors: 
     - Benjamin Sykes (SystemFiles)
+  github_repo: https://github.com/SystemFiles/ansible-linux-security
   description: Implements a number of best practices security measures to harden a linux system
   license: Apache-2.0
   min_ansible_version: '2.10'
