@@ -1,6 +1,10 @@
 ---
 # defaults file for ansible-linux-security
 
+# System Update settings
+update_all: true
+update_unattended_upgrades: true
+
 # Boot directory lock settings (change boot_mountpoint)
 boot_lock: true
 boot_mountpoint: /boot/efi
@@ -12,8 +16,8 @@ net_disable_ipforward: true
 
 # Firewall configuration settings
 firewall_enabled: true
-firewall_logging_mode: 'full'
-firewall_ssh_ip_restricted: true
+firewall_logging_mode: 'low'
+firewall_ssh_ip_restricted: false
 firewall_ssh_ip_subnets:
   - "10.35.1.0/26"
 
@@ -27,7 +31,7 @@ ssh_client_alive_count_max: 3
 ssh_allowed_users: ben ansiblecontroller
 ssh_login_grace_time: 60
 ssh_min_acc_uid: 500
-ssh_import_keys: true
+ssh_import_keys: false
 ssh_keys_url: https://github.com/systemfiles.keys
 ssh_keys_user: ben
 

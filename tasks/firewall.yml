@@ -8,22 +8,22 @@
   community.general.ufw:
     state: disabled
 
-- name: UFW | 3.0 | Set logging to '{{ firewall_logging_mode }}'
+- name: UFW | 3.0 | Ensure logging is enabled and set to '{{ firewall_logging_mode }}'
   community.general.ufw:
     logging: '{{ firewall_logging_mode }}'
 
-- name: UFW | 4.0 | Set default policy to implicit deny
+- name: UFW | 4.0 | Ensure default policy is set to implicit deny
   community.general.ufw:
     default: deny
 
-- name: UFW | 5.0 | Allow all SSH connectivity to target
+- name: UFW | 5.0 | Ensure SSH connectivity to target
   community.general.ufw:
     rule: allow
     comment: "OpenSSH Access from ALL"
     to_port: "{{ ssh_port }}"
   when: not firewall_ssh_ip_restricted
 
-- name: UFW | 5.1 | Allow SSH access only from select subnets
+- name: UFW | 5.1 | Ensure SSH access only from select subnets
   community.general.ufw:
     rule: allow
     comment: "OpenSSH Access from {{ item }}"

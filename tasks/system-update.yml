@@ -4,12 +4,15 @@
     name: '*'
     autoremove: yes
     state: latest
+  when: update_all
 
-- name: SYSTEM UPDATE | 2.0 | Upgrade all packages with newer versions available
+- name: SYSTEM UPDATE | 2.0 | Ensure all packages with newer versions available are upgraded
   ansible.builtin.apt:
     upgrade: yes
+  when: update_all
 
 - name: SYSTEM UPDATE | 3.0 | Ensure that security patches are always installed
   ansible.builtin.apt:
     name: unattended-upgrades
     state: latest
+  when: update_unattended_upgrades
