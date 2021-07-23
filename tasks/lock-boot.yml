@@ -15,7 +15,7 @@
   changed_when: false
   register: boot_uuid
 
-- name: BOOT LOCK | 4.0 | Get filesystem of {{ boot_mountpoint }}
+- name: BOOT LOCK | 4.0 | Get filesystem type of {{ boot_mountpoint }}
   ansible.builtin.shell: "lsblk -no FSTYPE {{ boot_mountsrc.stdout |quote }}"
   changed_when: false
   register: boot_fstype

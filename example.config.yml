@@ -2,6 +2,10 @@
 # Note: changing some of the provided parameters may lessen the security for your target system
 # The default settings are recommended for this ansible project
 
+# System Update settings
+update_all: true
+update_unattended_upgrades: true
+
 # Boot directory lock settings (change boot_mountpoint)
 boot_lock: true
 boot_mountpoint: /boot/efi
@@ -13,8 +17,8 @@ net_disable_ipforward: true # Normally it is recommended to leave this to true, 
 
 # Firewall configuration settings
 firewall_enabled: true
-firewall_logging_mode: 'full' # Options are full, high, medium, low, off, on 
-firewall_ssh_ip_restricted: true # Enable IP Filtering/whitelisting for connecting through SSH
+firewall_logging_mode: 'low' # Options are full, high, medium, low, off, on 
+firewall_ssh_ip_restricted: false # Enable IP Filtering/whitelisting for connecting through SSH
 firewall_ssh_ip_subnets:
   - "10.35.1.0/26"
 
@@ -28,7 +32,7 @@ ssh_client_alive_count_max: 3
 ssh_allowed_users: ben ansiblecontroller # Users that are allowed to connect through ssh (separated by spaces)
 ssh_login_grace_time: 60 # Login grace time in seconds (1min or less recommended)
 ssh_min_acc_uid: 500 # Min account uid for system accounts to be identified
-ssh_import_keys: true # Whether or not to import ssh keys from a URL (note: installs httplib2 via pip)
+ssh_import_keys: false # Whether or not to import ssh keys from a URL (note: installs requirement, httplib2, via pip)
 ssh_keys_url: https://github.com/systemfiles.keys
 ssh_keys_user: ben
 
