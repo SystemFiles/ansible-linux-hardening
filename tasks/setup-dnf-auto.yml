@@ -1,0 +1,35 @@
+
+- name: AUTOMATIC SECURITY UPDATES | 1.0 | Ensure upgrade type is set to 'security' in /etc/dnf/automatic.conf
+  community.general.ini_file:
+    path: /etc/dnf/automatic.conf
+    section: commands
+    option: upgrade_type
+    value: security
+    state: present
+    backup: true
+
+- name: AUTOMATIC SECURITY UPDATES | 2.0 | Ensure updates are automatically applied to the system
+  community.general.ini_file:
+    path: /etc/dnf/automatic.conf
+    section: commands
+    option: apply_updates
+    value: "yes"
+    state: present
+
+- name: AUTOMATIC SECURITY UPDATES | 3.0 | Ensure system update messages are passed to /etc/motd
+  community.general.ini_file:
+    path: /etc/dnf/automatic.conf
+    section: emitters
+    option: emit_via
+    value: motd
+    state: present
+
+- name: AUTOMATIC SECURITY UPDATES | 4.0 | Ensure dnf-automatic service is enabled
+  ansible.builtin.service:
+    name: dnf-automatic.timer
+    enabled: true
+
+- name: AUTOMATIC SECURITY UPDATES | 5.0 | Ensure dnf-automatic service is started
+  ansible.builtin.service:
+    name: dnf-automatic.timer
+    state: restarted

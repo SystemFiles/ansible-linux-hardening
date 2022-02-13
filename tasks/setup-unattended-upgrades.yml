@@ -1,0 +1,39 @@
+
+- name: AUTOMATIC SECURITY UPDATES | 1.0 | Ensure Unattended Upgrades is properly configured
+  ansible.builtin.template:
+    src: templates/50unattended-upgrades.j2
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: AUTOMATIC SECURITY UPDATES | 2.0 | Ensure that unattended-upgrades is enabled through 20auto-upgrades
+  ansible.builtin.copy:
+    src: files/20auto-upgrades
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    checksum: 79c58b80393bd2effb3896fe80c983d9933ebde8
+    owner: root
+    group: root
+    mode: '0644'
+    force: true
+    backup: true
+
+- name: AUTOMATIC SECURITY UPDATES | 3.0 | Ensure the apt-daily.timer service for package downloads is enabled
+  ansible.builtin.service:
+    name: apt-daily.timer
+    enabled: true
+
+- name: AUTOMATIC SECURITY UPDATES | 4.0 | Ensure the apt-daily.timer service for package downloads is started
+  ansible.builtin.service:
+    name: apt-daily.timer
+    state: restarted
+
+- name: AUTOMATIC SECURITY UPDATES | 5.0 | Ensure the apt-daily.timer service for package upgrades is enabled
+  ansible.builtin.service:
+    name: apt-daily-upgrade.timer
+    enabled: true
+
+- name: AUTOMATIC SECURITY UPDATES | 6.0 | Ensure the apt-daily.timer service for package upgrades is started
+  ansible.builtin.service:
+    name: apt-daily-upgrade.timer
+    state: restarted

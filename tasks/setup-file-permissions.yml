@@ -1,4 +1,4 @@
----
+
 - name: FILE PERMISSIONS | 1.0 | Ensure anacrontab, crontab, and cron.* have safe permissions
   ansible.builtin.file:
     path: "{{ item }}"
@@ -14,6 +14,8 @@
     - /etc/cron.weekly
     - /etc/cron.monthly
     - /etc/cron.d
+  tags:
+  - ansible-linux-security-file-permissions-files
 
 - name: FILE PERMISSIONS | 2.0 | Ensure proper permissions are set for passwd file
   ansible.builtin.file:
@@ -21,6 +23,8 @@
     owner: root
     group: root
     mode: 0644
+  tags:
+  - ansible-linux-security-file-permissions-files
 
 - name: FILE PERMISSIONS | 3.0 | Ensure proper permissions are set for the shadow file
   ansible.builtin.file:
@@ -28,6 +32,8 @@
     owner: root
     group: root
     mode: 0600
+  tags:
+  - ansible-linux-security-file-permissions-files
 
 - name: FILE PERMISSIONS | 4.0 | Ensure proper permissions are set for the gshadow file
   ansible.builtin.file:
@@ -35,6 +41,8 @@
     owner: root
     group: root
     mode: 0600
+  tags:
+  - ansible-linux-security-file-permissions-files
 
 - name: FILE PERMISSIONS | 5.0 | Ensure permissions are set for /etc/ssh/sshd_config
   ansible.builtin.file:
@@ -42,6 +50,8 @@
     owner: root
     group: root
     mode: 0600
+  tags:
+  - ansible-linux-security-file-permissions-files
 
 - name: FILE PERMISSIONS | 6.0 | Ensure permissions are set for /etc/fstab
   ansible.builtin.file:
@@ -49,7 +59,9 @@
     owner: root
     group: root
     mode: 0600
-  when: boot_lock
+  when: lock_boot_vol
+  tags:
+  - ansible-linux-security-file-permissions-files
 
 - name: FILE PERMISSIONS | 7.0 | Ensure default user umask is 027 or more restrictive
   block:
@@ -75,3 +87,6 @@
         path: /etc/profile
         regexp: '(^\s+umask) 002'
         replace: '\1 {{ fp_umask_default }}'
+  when: umask_default is defined and umask_default | int > 27
+  tags:
+  - ansible-linux-security-file-permissions-umask

@@ -1,51 +1,17 @@
----
-# defaults file for ansible-linux-security
 
-# System Update settings
-update_all: true
-update_unattended_upgrades: true
 
-# Boot directory lock settings (change boot_mountpoint)
-boot_lock: true
-boot_mountpoint: /boot/efi
-boot_automate_reboot: false
 
-# Network configuration settings
-net_enabled: true
-net_disable_ipforward: true
 
-# Firewall configuration settings
-firewall_enabled: true
-firewall_logging_mode: 'low'
+
+lock_boot_vol: false
+boot_mountpoint: /boot
+
+disable_ipv4_forwarding: true
+
 firewall_ssh_ip_restricted: false
-firewall_ssh_ip_subnets:
-  - "10.35.1.0/26"
+# If firewall_ssh_ip_restricted is enabled, uncomment the below line and specify a list of IPs or IP ranges allow SSH access to
+# firewall_ssh_ip_subnets:
 
-# SSH configuration settings
-ssh_enabled: true
 ssh_port: 8222
-ssh_max_login_tries: 5
-ssh_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
-ssh_idle_timeout: 900
-ssh_client_alive_count_max: 3
-ssh_allowed_users: ben ansiblecontroller
-ssh_login_grace_time: 60
-ssh_min_acc_uid: 500
-ssh_import_keys: false
-ssh_keys_url: https://github.com/systemfiles.keys
-ssh_keys_user: ben
 
-# Password rule settings
-pass_enabled: true
-pass_lock_accounts: true
-pass_lock_attempts: 5
-pass_unlock_time: 3600
-pass_expires: true
-pass_expire_ignores:
-  - "ansiblecontroller"
-pass_expire_days: 90
-pass_min_user_uid: 1000
-
-# File permissions settings
-fp_enabled: true
-fp_umask_default: "027"
+configure_auto_upgrades: true

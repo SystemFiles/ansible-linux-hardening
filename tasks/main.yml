@@ -1,34 +1,27 @@
----
-# tasks file for ansible-linux-security
 
-- name: "[System Updates Configuration]"
-  ansible.builtin.import_tasks: tasks/system-update.yml
+- name: "(ansible-linux-security) Load OS Specific Variables From File"
+  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+  tags:
+  - always
 
-- name: "[Configure network rules]"
-  ansible.builtin.import_tasks: tasks/network.yml
-  when: net_enabled
-  notify: Reload Sysctl
+- ansible.builtin.include_tasks:
+    file: "Centos.yml"
+    apply:
+      become: true
+      tags:
+      - ansible-linux-security-centos
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+  tags:
+  - ansible-linux-security-centos
+  - ansible-linux-security-centos-tasks
 
-- name: "[Configure UFW for firewall management]"
-  ansible.builtin.import_tasks: tasks/firewall.yml
-  when: firewall_enabled
-  notify: Restart UFW
-
-- name: "[Ensure Boot Directory is locked]"
-  ansible.builtin.import_tasks: tasks/lock-boot.yml
-  when: boot_lock
-  notify: Reboot Required
-
-- name: "[Configure SSH]"
-  ansible.builtin.import_tasks: tasks/ssh.yml
-  when: ssh_enabled
-  notify: Restart SSH
-
-- name: "[Configure password rules]"
-  ansible.builtin.import_tasks: tasks/password-rules.yml
-  when: pass_enabled
-  notify: Restart SSH
-
-- name: "[Configure file permissions]"
-  ansible.builtin.import_tasks: tasks/file-permissions.yml
-  when: fp_enabled
+- ansible.builtin.include_tasks:
+    file: "Ubuntu.yml"
+    apply:
+      become: true
+      tags:
+      - ansible-linux-security-ubuntu
+  when: ansible_distribution == 'Ubuntu' and ansible_os_family == 'Debian'
+  tags:
+  - ansible-linux-security-ubuntu
+  - ansible-linux-security-ubuntu-tasks

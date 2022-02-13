@@ -1,0 +1,45 @@
+
+- ansible.builtin.import_tasks: tasks/system-update.yml
+  tags:
+  - ansible-linux-security-package-updates
+
+- ansible.builtin.import_tasks: "tasks/setup-unattended-upgrades.yml"
+  when: configure_auto_upgrades
+  tags:
+  - ansible-linux-security-auto-dnf
+
+- ansible.builtin.import_tasks: "tasks/setup-network.yml"
+  tags:
+  - ansible-linux-security-network
+
+- ansible.builtin.import_tasks: "tasks/setup-firewall.yml"
+  tags:
+  - ansible-linux-security-firewall
+
+- ansible.builtin.import_tasks: "tasks/setup-boot-lock.yml"
+  when: lock_boot_vol
+  notify: Reboot Required
+  tags:
+  - ansible-linux-security-boot-lock
+
+- ansible.builtin.include_tasks:
+    file: "tasks/setup-ssh.yml"
+    apply:
+      tags:
+      - ansible-linux-security-ssh
+  tags:
+  - ansible-linux-security-ssh
+  - ansible-linux-security-ssh-tasks
+
+- ansible.builtin.include_tasks:
+    file: "tasks/setup-password-rules.yml"
+    apply:
+      tags:
+      - ansible-linux-security-password-rules
+  tags:
+  - ansible-linux-security-password-rules
+  - ansible-linux-security-password-rules-tasks
+
+- ansible.builtin.import_tasks: "tasks/setup-file-permissions.yml"
+  tags:
+  - ansible-linux-security-file-permissions

@@ -1,18 +1,9 @@
----
+
 - name: SYSTEM UPDATE | 1.0 | Update all package sources to latest stable versions
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name: '*'
-    autoremove: yes
     state: latest
-  when: update_all
 
-- name: SYSTEM UPDATE | 2.0 | Ensure all packages with newer versions available are upgraded
-  ansible.builtin.apt:
-    upgrade: yes
-  when: update_all
-
-- name: SYSTEM UPDATE | 3.0 | Ensure that security patches are always installed
-  ansible.builtin.apt:
-    name: unattended-upgrades
-    state: latest
-  when: update_unattended_upgrades
+- name: SYSTEM UPDATE | 2.0 | Install required packages for role
+  ansible.builtin.package:
+    name: "{{ install_packages }}"

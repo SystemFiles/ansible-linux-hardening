@@ -1,10 +1,10 @@
----
+
 - name: NETWORK | 1.0 | Ensure IP Forwarding is disabled (if not required. Default is no)
   ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
     regexp: '^(# *)?net.ipv4.ip_forward'
     line: net.ipv4.ip_forward=0
-  when: net_disable_ipforward
+  when: disable_ipv4_forwarding
 
 - name: NETWORK | 2.0 | Ensure Additional IP Security Precautions are implemented
   ansible.builtin.lineinfile:
@@ -22,3 +22,9 @@
         line: 'net.ipv4.conf.default.accept_redirects = 0' }
     - { regexp: '^(# *)?net.ipv4.icmp_ignore_bogus_error_responses',
         line: 'net.ipv4.icmp_ignore_bogus_error_responses = 1' }
+  loop_control:
+    label: "{{ item.line }}"
+
+- name: "NETWORK | 3.0 | Reload Sysctl"
+  ansible.builtin.command: sysctl --system
+  changed_when: false

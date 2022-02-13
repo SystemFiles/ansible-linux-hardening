@@ -1,0 +1,40 @@
+
+- name: FIREWALLD | 1.0 | Ensure Firewalld is disabled
+  ansible.builtin.service:
+    name: firewalld
+    enabled: false
+    state: stopped
+
+- name: FIREWALLD | 2.0 | Ensure default policy is set to implicit deny
+  ansible.posix.firewalld:
+    permanent: true
+    zone: public
+    target: DROP
+    state: disabled
+
+- name: FIREWALLD | 3.0 | Ensure SSH connectivity to target
+  ansible.posix.firewalld:
+    permanent: true
+    port: "{{ ssh_port }}/tcp"
+    state: enabled
+  when: not firewall_ssh_ip_restricted
+  
+- name: FIREWALLD | 3.1 | Ensure SSH access only from select subnets
+  ansible.posix.firewalld:
+    permanent: true
+    port: "{{ ssh_port }}/tcp"
+    source: "{{ item }}"
+    state: enabled
+  loop: "{{ firewall_ssh_ip_subnets | list }}"
+  when: firewall_ssh_ip_restricted and firewall_ssh_ip_subnets | length
+
+- name: FIREWALLD | 4.0 | Restart and Enable Firewalld
+  ansible.builtin.service:
+    name: firewalld
+    enabled: true
+    state: started
+
+- name: FIREWALLD | 5.0 | Reload firewall configuration to ensure changes are applied
+  ansible.builtin.service:
+    name: firewalld
+    state: reloaded

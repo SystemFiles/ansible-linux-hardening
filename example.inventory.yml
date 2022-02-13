@@ -1,0 +1,4 @@
+all:
+  hosts:
+    <hostname>:
+      ansible_host: <hostname_or_ip_address>

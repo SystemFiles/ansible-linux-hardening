@@ -1,4 +1,4 @@
----
+
 - name: SSH | 1.0 | Ensure the default SSH port is not 22
   ansible.builtin.lineinfile:
     state: present
@@ -6,6 +6,8 @@
     regexp: '^(# *)?Port'
     line: Port {{ ssh_port }}
     validate: /usr/sbin/sshd -T -f %s
+  tags:
+  - ansible-linux-security-ssh-port
 - name: SSH | 2.0 | Ensure sshd_config is hardended
   block:
     - name: SSH | 2.1 | Ensure Root login is disabled
@@ -94,7 +96,7 @@
         regexp: '^(# *)?AllowUsers'
         line: AllowUsers {{ ssh_allowed_users }}
         validate: /usr/sbin/sshd -T -f %s
-      when: ssh_allowed_users |length > 0
+      when: ssh_allowed_users is defined and ssh_allowed_users |length
     - name: SSH | 2.13 | Ensure SSH Protocol is set to 2
       ansible.builtin.lineinfile:
         state: present
@@ -123,6 +125,8 @@
         regexp: '^(# *)?LoginGraceTime'
         line: LoginGraceTime {{ ssh_login_grace_time }}
         validate: /usr/sbin/sshd -T -f %s
+  tags:
+  - ansible-linux-security-ssh-harden
 
 - name: SSH | 3.0 | Ensure system accounts are non-login
   block:
@@ -147,31 +151,10 @@
         - item != "sync"
         - item != "shutdown"
         - item != "halt"
+  tags:
+  - ansible-linux-security-sys-nologin
 
-- name: SSH | 4.0 | Ensure SSH-Key for the selected user are installed on the system
-  block:
-    - name: SSH | 4.1 | Install prerequisite pip
-      ansible.builtin.apt:
-        name: python3-pip
-        state: present
-    - name: SSH | 4.2 | Install httplib2
-      ansible.builtin.pip:
-        name: httplib2
-        state: present
-    - name: SSH | 4.3 | Get SSH keys from URL
-      ansible.builtin.uri:
-        url: "{{ ssh_keys_url }}"
-        return_content: yes
-      register: ssh_keys
-    - name: SSH | 4.4 | Add the SSH keys to ~/.ssh/authorized_keys
-      ansible.builtin.blockinfile:
-        create: true
-        dest: "/home/{{ ssh_keys_user }}/.ssh/authorized_keys"
-        block: |
-          {{ ssh_keys.content }}
-      when:
-        - ssh_keys.status == 200
-        - ssh_keys.content |length > 0
-  when: 
-    - ansible_facts.os_family == "Debian"
-    - ssh_import_keys
+- name: SSH | 5.0 | Restart SSH Daemon
+  ansible.builtin.service:
+    name: sshd
+    state: restarted

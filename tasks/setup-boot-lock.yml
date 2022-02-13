@@ -1,4 +1,4 @@
----
+
 - name: BOOT LOCK | 1.0 | Check if {{ boot_mountpoint }} exists and is mounted
   ansible.builtin.command: "mountpoint -q {{ boot_mountpoint }}"
   register: volume_stat

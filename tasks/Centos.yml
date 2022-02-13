@@ -1,0 +1,56 @@
+
+- ansible.builtin.import_tasks: "tasks/setup-epel-repo.yml"
+  when: ansible_distribution_major_version == '7' or ansible_distribution_major_version == '8'
+  tags:
+  - ansible-linux-security-centos-epel-repo
+
+- ansible.builtin.import_tasks: "tasks/system-update.yml"
+  tags:
+  - ansible-linux-security-package-updates
+
+- ansible.builtin.import_tasks: "tasks/setup-dnf-auto.yml"
+  when: configure_auto_upgrades
+  tags:
+  - ansible-linux-security-auto-dnf
+
+- ansible.builtin.import_tasks: "tasks/setup-network.yml"
+  tags:
+  - ansible-linux-security-network
+
+- ansible.builtin.import_tasks: "tasks/setup-ufw.yml"
+  when: ansible_distribution_major_version == '7' or ansible_distribution_major_version == '8'
+  tags:
+  - ansible-linux-security-firewall
+
+- ansible.builtin.import_tasks: "tasks/setup-firewalld.yml"
+  when: ansible_distribution_major_version == '9'
+  tags:
+  - ansible-linux-security-firewall
+
+- ansible.builtin.import_tasks: "tasks/setup-boot-lock.yml"
+  when: lock_boot_vol
+  notify: Reboot Required
+  tags:
+  - ansible-linux-security-boot-lock
+
+- ansible.builtin.include_tasks:
+    file: "tasks/setup-ssh.yml"
+    apply:
+      tags:
+      - ansible-linux-security-ssh
+  tags:
+  - ansible-linux-security-ssh
+  - ansible-linux-security-ssh-tasks
+
+- ansible.builtin.include_tasks:
+    file: "tasks/setup-password-rules.yml"
+    apply:
+      tags:
+      - ansible-linux-security-password-rules
+  tags:
+  - ansible-linux-security-password-rules
+  - ansible-linux-security-password-rules-tasks
+
+- ansible.builtin.import_tasks: "tasks/setup-file-permissions.yml"
+  tags:
+  - ansible-linux-security-file-permissions
