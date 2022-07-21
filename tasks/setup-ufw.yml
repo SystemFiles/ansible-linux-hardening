@@ -16,7 +16,7 @@
     rule: allow
     comment: "OpenSSH Access from anywhere"
     to_port: "{{ ssh_port }}"
-  when: firewall_ssh_ip_subnets | length <= 0 
+  when: not firewall_ssh_ip_subnets is defined
 
 - name: UFW | 4.1 | Ensure SSH access only from select subnets
   community.general.ufw:
@@ -25,7 +25,7 @@
     to_port: "{{ ssh_port }}"
     from_ip: "{{ item }}"
   loop: "{{ firewall_ssh_ip_subnets | list }}"
-  when: firewall_ssh_ip_subnets | length
+  when: firewall_ssh_ip_subnets is defined and firewall_ssh_ip_subnets | length
 
 - name: UFW | 5.0 | Restart UFW
   community.general.ufw:

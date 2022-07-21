@@ -141,6 +141,9 @@
       loop: "{{ system_accounts.stdout_lines |list }}"
       when:
         - item != "root"
+        - item != "sync"
+        - item != "shutdown"
+        - item != "halt
     - name: SSH | 3.3 | Ensure system accounts are non-login (shell)
       ansible.builtin.user:
         name: "{{ item }}"
