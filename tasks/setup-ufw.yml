@@ -14,9 +14,9 @@
 - name: UFW | 4.0 | Ensure SSH connectivity to target
   community.general.ufw:
     rule: allow
-    comment: "OpenSSH Access from ALL"
+    comment: "OpenSSH Access from anywhere"
     to_port: "{{ ssh_port }}"
-  when: not firewall_ssh_ip_restricted
+  when: firewall_ssh_ip_subnets | length <= 0 
 
 - name: UFW | 4.1 | Ensure SSH access only from select subnets
   community.general.ufw:
@@ -25,7 +25,7 @@
     to_port: "{{ ssh_port }}"
     from_ip: "{{ item }}"
   loop: "{{ firewall_ssh_ip_subnets | list }}"
-  when: firewall_ssh_ip_restricted and firewall_ssh_ip_subnets | length
+  when: firewall_ssh_ip_subnets | length
 
 - name: UFW | 5.0 | Restart UFW
   community.general.ufw:

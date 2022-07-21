@@ -6,12 +6,15 @@
 lock_boot_vol: false
 boot_mountpoint: /boot
 
-disable_ipv4_forwarding: true
+disable_ipv4_forwarding: false 
 
-firewall_ssh_ip_restricted: false
-# If firewall_ssh_ip_restricted is enabled, uncomment the below line and specify a list of IPs or IP ranges allow SSH access to
+# uncomment the below line and specify a list of IPs or IP ranges allow SSH access to
 # firewall_ssh_ip_subnets:
 
 ssh_port: 8222
 
 configure_auto_upgrades: true
+
+umask_default: '022'
+
+pass_expires: false

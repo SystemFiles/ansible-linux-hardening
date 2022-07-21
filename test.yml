@@ -5,7 +5,6 @@
     - name: PRE TASKS | 1.0 | Load user variables from configuration
       ansible.builtin.include_vars: config.yml
       failed_when: false
-      ignore_errors: true
 
   roles:
     - 'ansible-linux-security'

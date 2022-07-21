@@ -59,7 +59,6 @@
     owner: root
     group: root
     mode: 0600
-  when: lock_boot_vol
   tags:
   - ansible-linux-security-file-permissions-files
 

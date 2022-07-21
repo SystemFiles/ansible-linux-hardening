@@ -12,7 +12,7 @@
   tags:
   - ansible-linux-security-network
 
-- ansible.builtin.import_tasks: "tasks/setup-firewall.yml"
+- ansible.builtin.import_tasks: "tasks/setup-ufw.yml"
   tags:
   - ansible-linux-security-firewall
 
