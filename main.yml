@@ -3,7 +3,7 @@
 
   pre_tasks:
     - name: PRE TASKS | 1.0 | Load user variables from configuration
-      ansible.builtin.include_vars: config.ym
+      ansible.builtin.include_vars: config.yml
       ignore_errors: true
 
   roles:

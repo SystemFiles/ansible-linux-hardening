@@ -1,0 +1,17 @@
+
+
+
+
+
+install_packages:
+  - unattended-upgrades
+  - ufw
+
+unattended_upgrades_automatic_reboot_when_required: true 
+unattended_upgrades_automatic_reboot_if_users: false
+unattended_upgrades_remove_unused_kernel_packages: true
+unattended_upgrades_removed_unused_dependencies: true
+unattended_upgrades_security_only: true
+unattended_upgrades_auto_fix_interrupted_dpkg: true
+unattended_upgrades_mail_report_trigger: only-on-error
+unattended_upgrades_syslog_logging_enabled: true
